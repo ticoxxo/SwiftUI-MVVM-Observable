@@ -15,3 +15,12 @@ struct Reminder: Identifiable, Hashable {
     var status: StatusReminder
 }
 
+extension Reminder {
+    subscript(task at: Int) -> ReminderItem? {
+        guard at >= 0 && at < reminderItems.count else {
+            return nil
+        }
+        return reminderItems[at]
+    }
+    
+}

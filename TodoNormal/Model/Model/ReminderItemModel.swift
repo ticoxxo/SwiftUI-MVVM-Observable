@@ -11,5 +11,7 @@ struct ReminderItem: Identifiable, Hashable, Equatable {
     let id: UUID = UUID()
     var description: String
     var status: StatusItem
+    var dueDate: Date?
+    var creationDate: Date = Date()
 }
 

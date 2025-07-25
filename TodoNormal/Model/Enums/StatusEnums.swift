@@ -37,7 +37,7 @@ enum StatusReminder: Hashable {
     }
 }
 
-enum StatusItem: Hashable {
+enum StatusItem: Hashable, CaseIterable, Identifiable {
     case isDone
     case isCancelled
     case isPaused
@@ -55,5 +55,29 @@ enum StatusItem: Hashable {
         case .isPending: return .orange
         }
     }
+    
+    var statusText: String {
+        switch self {
+        case .isDone: return "Done"
+        case .isCancelled: return "Cancelled"
+        case .isPaused: return "Paused"
+        case .isInProgress: return "Progress"
+        case .isArchived: return "Archived"
+        case .isPending: return "Pending"
+        }
+    }
+    
+    var imageText: String {
+        switch self {
+        case .isDone: return "checkmark.seal"
+        case .isCancelled: return "xmark.seal"
+        case .isPaused: return "pause.circle.fill"
+        case .isInProgress: return "progress.indicator"
+        case .isArchived: return "archivebox.fill"
+        case .isPending: return "tortoise.circle"
+        }
+    }
+    
+    var id: StatusItem { self }
     
 }

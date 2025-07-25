@@ -14,6 +14,10 @@ extension View {
     func statusColor(_ status: Color) -> some View {
         modifier(StatusModifier(status: status))
     }
+    
+    func listItemStyle(_ color: Color) -> some View {
+        modifier(ReminderItemRow(color: color))
+    }
 }
 
 struct BorderedText: ViewModifier {
@@ -33,7 +37,20 @@ struct StatusModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundColor(status)
-            
     }
 
 }
+
+struct ReminderItemRow: ViewModifier {
+    var color: Color
+    func body(content: Content) -> some View {
+        content
+            .padding( 10)
+            .frame(maxWidth: .infinity)
+            .overlay {
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(color ,lineWidth: 1)
+            }
+    }
+}
+

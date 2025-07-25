@@ -6,27 +6,19 @@
 //
 import SwiftUI
 
-@Observable
-class HomeViewModel {
-    
-    var reminderController: ReminderController
-    
-    init(reminderController: ReminderController) {
-        self.reminderController = reminderController
-    }
-    
-    func addReminder() {
-        print("Entro al reminder")
-        let reminder = Reminder(
-            title: "Reminder Title",
-            description: "This is a reminder description",
-            reminderItems: [],
-            status: StatusReminder.isInProgress
-        )
-        //todos.append(reminder)
-        reminderController.addOrUpdateReminder(reminder)
+extension Home {
+    @Observable
+    class ViewModel {
+        var reminderManager: ReminderController
+        
+        
+        init(reminderManager: ReminderController) {
+            self.reminderManager = reminderManager
+        }
+  
     }
 }
+
 
 
 

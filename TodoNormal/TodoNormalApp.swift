@@ -9,11 +9,12 @@ import SwiftUI
 
 @main
 struct TodoNormalApp: App {
-    @State private var controller = ReminderController()
+    @State private var reminderManager = ReminderController()
+    
     var body: some Scene {
         WindowGroup {
-            Home(controller: controller)
-                
+            Home()
+                .environment(\.reminderManager, reminderManager)
         }
     }
 }

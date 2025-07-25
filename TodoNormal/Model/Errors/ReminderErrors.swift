@@ -7,6 +7,13 @@
 import SwiftUI
 
 enum ReminderErrors: Error {
-    case reminderNotFound
+    case reminderElementNotFound
     case reminderAlreadyExists
+    case reminderIdNotFound
+    case reminderIsNil
+}
+
+
+enum ReminderItemErrors: Error {
+    case itemIsNil
 }

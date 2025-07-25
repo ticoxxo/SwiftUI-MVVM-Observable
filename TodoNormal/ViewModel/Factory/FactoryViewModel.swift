@@ -10,11 +10,17 @@ import SwiftUI
 class FactoryViewModel {
     let reminderController = ReminderController()
     
+    /*
     func makeHomeViewModel() -> HomeViewModel {
-        return HomeViewModel(reminderController: ReminderController())
+        return HomeViewModel(reminderController: reminderController)
     }
     
-    func makeReminderViewModel(reminder: Reminder) -> ReminderViewModel {
+    func makeReminderViewModel() -> ReminderViewModel {
         return ReminderViewModel( reminderController: reminderController)
     }
+    
+    func makeReminderTaskViewModel() -> ReminderTaskViewModel {
+        return ReminderTaskViewModel(reminderController: reminderController)
+    }
+     */
 }

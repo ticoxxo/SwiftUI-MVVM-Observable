@@ -9,30 +9,97 @@ import Observation
 
 @Observable
 class ReminderController {
-    private(set) var reminders: [Reminder] = []
+    var reminders: [Reminder] = []
+    static let defaultList: [Reminder] = [
+        Reminder(title: "Reminder de prueba", description: "Descripcion de prueba", status: StatusReminder.isInProgress),
+        Reminder(title: "Reminder dos", description: "Descripcion reminder 2",
+                 reminderItems: [ReminderItem(description: "Item child", status: StatusItem.isDone)],
+                 status: StatusReminder.isPending ),
+        Reminder(title: "Reminder con fecha limite", description: "Fecha limite para reminder ejemplo",
+                 reminderItems: [ReminderItem(description: "Darle de comer a los gatos", status: StatusItem.isInProgress),
+                                 ReminderItem(description: "Darle de comer a los gatos", status: StatusItem.isPending, dueDate: Date().addDays(2))],
+                 status: StatusReminder.isPending)
+    ]
+  
+    init() {
+        self.reminders = ReminderController.defaultList
+    }
+}
+
+extension ReminderController {
     
-    func addOrUpdateReminder(_ reminder: Reminder) {
-        if let indexReminder = reminders.firstIndex(where: { $0.id == reminder.id }) {
-            reminders[indexReminder] = reminder
-        } else {
-            reminders.append(reminder)
-            print("Reminder count : \(reminders.count)")
-        }
+    func getAll() -> [Reminder] {
+        return reminders
     }
     
-    func addTask(_ item: ReminderItem, to reminder: Reminder) {
-        if let exist = reminders.firstIndex ( where: {$0.id == reminder.id}) {
-            reminders[exist].reminderItems.append(item)
-        } else {
-            print("Reminder not found")
-        }
-    }
-    
-    func getReminder(_ reminderId: UUID) throws -> Reminder? {
-        guard let reminder = reminders.first(where: { $0.id == reminderId }) else {
-            throw ReminderErrors.reminderNotFound
+    func addOrUpdate(reminder: Reminder?) throws {
+        guard let validReminder = reminder else {
+            throw ReminderErrors.reminderIsNil
         }
         
-        return reminder
+        if let exist = self[index: validReminder.id] {
+            reminders[exist] = validReminder
+        } else {
+            reminders.append(validReminder)
+        }
     }
+    
+    func addTask(task: ReminderItem? , to id: UUID) throws {
+        guard let valid = task else {
+            throw ReminderItemErrors.itemIsNil
+        }
+        if let index = self[index: id] {
+            reminders[index].reminderItems.append(valid)
+        } else {
+            throw ReminderErrors.reminderElementNotFound
+        }
+    }
+    
+    subscript(at position: Int) -> Reminder? {
+        guard position >= 0 && position < reminders.count else {
+            return nil
+        }
+        return reminders[position]
+    }
+    
+    subscript(reminderCopy id: UUID) -> Reminder? {
+        guard let index = self[index: id] else {
+            return nil
+        }
+        
+        return self.reminders[index]
+    }
+    
+    subscript(index id: UUID) -> Int? {
+        guard let index = reminders.firstIndex(where : { $0.id == id }) else {
+            return nil
+        }
+        
+        return index
+    }
+    
+    subscript(binding id: UUID)  -> Binding<Reminder>? {
+        guard let index = self[index: id] else {
+            return nil
+        }
+        return Binding(
+            get: { self.reminders[index] },
+            set: { self.reminders[index] = $0 }
+        )
+    }
+    
+    subscript(all: String) -> Binding<[Reminder]>{
+        return Binding<[Reminder]>(
+            get: { self.reminders },
+            set: { self.reminders = $0 }
+            )
+    }
+    
+    func getBindArray() -> Binding<[Reminder]> {
+        return Binding<[Reminder]>(
+            get: { self.reminders },
+            set: { self.reminders = $0 }
+            )
+    }
+    
 }
