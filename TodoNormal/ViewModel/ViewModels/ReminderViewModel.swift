@@ -11,9 +11,33 @@ extension ReminderView {
     class ViewModel {
         
         var showSheet: Bool
+        var reminderID: UUID
+        var reminder: Reminder
+        var selectedItem: ReminderItem?
         
-        init(){
+        init(reminderId: UUID, reminderManager: ReminderController){
             self.showSheet = false
+            self.reminderID = reminderId
+            self.reminder = reminderManager[copy: reminderId]
+            /* self.reminder = Binding(
+                get: { self.reminderManager[copy: self.reminderID] },
+                set: { self.reminderManager[copy: self.reminderID] = $0 }
+            )
+             */
+        }
+        
+        func addTask(_ reminder: ReminderItem? = nil) {
+            self.selectedItem = reminder
+            self.showSheet = true
+        }
+        
+        func saveTask(item: ReminderItem) {
+            if item.id == self.selectedItem?.id {
+                self.reminder[copyById: item.id] = item
+            } else {
+                self.reminder.addTaskItem(item)
+            }
+            //self.reminder.addTaskItem(item)
         }
     }
 }

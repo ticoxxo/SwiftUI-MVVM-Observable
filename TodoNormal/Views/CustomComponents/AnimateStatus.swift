@@ -22,9 +22,6 @@ struct AnimateStatus: View {
                 .task {
                     isRotated.toggle()
                 }
-                .onTapGesture {
-                    isRotated.toggle()
-                }
  
     }
 }

@@ -10,7 +10,9 @@ extension Home {
     @Observable
     class ViewModel {
         var reminderManager: ReminderController
-        
+        var reminders: [Reminder] {
+            reminderManager.reminders
+        }
         
         init(reminderManager: ReminderController) {
             self.reminderManager = reminderManager

@@ -27,7 +27,7 @@ class ReminderController {
 }
 
 extension ReminderController {
-    
+
     func getAll() -> [Reminder] {
         return reminders
     }
@@ -62,20 +62,17 @@ extension ReminderController {
         return reminders[position]
     }
     
-    subscript(reminderCopy id: UUID) -> Reminder? {
-        guard let index = self[index: id] else {
-            return nil
-        }
-        
-        return self.reminders[index]
-    }
-    
     subscript(index id: UUID) -> Int? {
         guard let index = reminders.firstIndex(where : { $0.id == id }) else {
             return nil
         }
         
         return index
+    }
+    
+    subscript(copy id: UUID) -> Reminder {
+        get { self.reminders[self[index: id]!] }
+        set { self.reminders[self[index: id]!] = newValue }
     }
     
     subscript(binding id: UUID)  -> Binding<Reminder>? {

@@ -9,13 +9,12 @@ import SwiftUI
 struct Home: View {
     @State private var viewModel: ViewModel?
     @Environment(\.reminderManager) private var reminderManager
-    
+    @State var ddd = [Reminder]()
     var body: some View {
         NavigationStack {
             if let viewModel {
                 List {
-                    
-                    ForEach(viewModel.reminderManager.reminders) { reminder in
+                    ForEach(viewModel.reminders) { reminder in
                         NavigationLink(value: reminder.id) {
                             Text(reminder.title)
                                 .font(.headline)
@@ -23,9 +22,7 @@ struct Home: View {
                     }
                 }
                 .navigationDestination(for: Reminder.ID.self) { id in
-                    if let bind = viewModel.reminderManager[binding: id] {
-                        ReminderView(reminder:  bind)
-                    }
+                    ReminderView(reminderId:  id)
                 }
             }
         }

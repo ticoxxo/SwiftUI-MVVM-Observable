@@ -18,6 +18,10 @@ extension View {
     func listItemStyle(_ color: Color) -> some View {
         modifier(ReminderItemRow(color: color))
     }
+    
+    func validateFormSection(_ bool: Bool) -> some View {
+        modifier(ValidateSection(isValid: bool))
+    }
 }
 
 struct BorderedText: ViewModifier {
@@ -54,3 +58,13 @@ struct ReminderItemRow: ViewModifier {
     }
 }
 
+struct ValidateSection: ViewModifier {
+    var isValid: Bool
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(isValid ? .green : .red, lineWidth: 1)
+            }
+    }
+}
