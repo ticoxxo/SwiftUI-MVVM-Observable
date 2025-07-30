@@ -28,11 +28,15 @@ class ReminderController {
 
 extension ReminderController {
 
+    func addReminderToStore(reminder: Reminder) {
+        self.reminders.append(reminder)
+    }
+    
     func getAll() -> [Reminder] {
         return reminders
     }
     
-    func addOrUpdate(reminder: Reminder?) throws {
+    func addOrUpdate(reminder: Reminder?) async throws {
         guard let validReminder = reminder else {
             throw ReminderErrors.reminderIsNil
         }

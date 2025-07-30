@@ -9,7 +9,8 @@ import SwiftUI
 struct Home: View {
     @State private var viewModel: ViewModel?
     @Environment(\.reminderManager) private var reminderManager
-    @State var ddd = [Reminder]()
+    @State private var addNewReminder: Bool = false
+    
     var body: some View {
         NavigationStack {
             if let viewModel {
@@ -23,6 +24,18 @@ struct Home: View {
                 }
                 .navigationDestination(for: Reminder.ID.self) { id in
                     ReminderView(reminderId:  id)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            addNewReminder.toggle()
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+                .sheet(isPresented: $addNewReminder) {
+                    ReminderView(reminderId: nil)
                 }
             }
         }
