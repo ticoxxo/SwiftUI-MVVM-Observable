@@ -10,16 +10,44 @@ import SwiftUI
 struct ReminderView: View {
     
     @Environment(\.reminderManager) private var reminderManager
+    @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ViewModel?
-    var reminderId: Reminder.ID
+    var reminderId: Reminder.ID?
     var body: some View {
         
         
         if let viewModel {
             @Bindable var viewModel = viewModel
             VStack {
-                Text(viewModel.reminder.title )
-                TextField("Title", text: $viewModel.reminder.title)
+                
+                VStack {
+                    Text("ID = \(viewModel.reminder.id)")
+                        .font(.caption)
+                        
+                    TextField("|1|  qq", text: $viewModel.reminder.title)
+                    HStack {
+                        Button {
+                            Task {
+                                await viewModel.saveReminder()
+                                dismiss()
+                            }
+                        } label: {
+                            Text("Save")
+                            Image(systemName: "tray.full.fill")
+                        }
+                        Spacer()
+                        Button {
+                            viewModel.addTask()
+                        } label: {
+                            Text("Add task")
+                            Image(systemName: "plus")
+                        }
+                        
+                        
+                    }
+                    .opacity(viewModel.isEdit ? 1 : 0)
+                }
+                .padding()
                         
                     List {
                          ForEach($viewModel.reminder.reminderItems) { item in
@@ -39,13 +67,6 @@ struct ReminderView: View {
             }
             .navigationTitle("Lista de tareas")
             .sheet(isPresented: $viewModel.showSheet) {
-                /*
-                 if let selectedItem = viewModel.selectedItem {
-                 SheetTaskView(reminder: $reminder, selectedItem: selectedItem)
-                 } else {
-                 SheetTaskView(reminder: $reminder)
-                 }
-                 */
                 SheetTaskView(reminderItem: viewModel.selectedItem, onSave: { item in
                     viewModel.saveTask(item: item)
                 })
@@ -64,7 +85,7 @@ struct ReminderView: View {
         else {
             ProgressView()
                 .task {
-                    self.viewModel = ViewModel(reminderId: reminderId, reminderManager: reminderManager)
+                    self.viewModel = ViewModel(reminderId: self.reminderId, reminderManager: reminderManager)
                 }
         }
     }

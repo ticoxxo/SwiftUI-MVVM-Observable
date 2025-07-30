@@ -16,26 +16,7 @@ struct SheetTaskView: View {
  
     var body: some View {
         Form {
-            /*
-            Section(header: Text("Task Details")) {
-                TextField("Task Title", text: $viewModel.reminderItem.description)
-                DatePicker(
-                    "Due date",
-                    selection: Binding<Date>(
-                        get: {viewModel.reminderItem.dueDate ?? Date()},
-                        set: { viewModel.reminderItem.dueDate = $0 }
-                    ),
-                    displayedComponents: [.date]
-                )
-                PickerView(item: $viewModel.reminderItem)
-            }
-            Section {
-                Button("Save") {
-                    reminder.reminderItems.append(viewModel.reminderItem)
-                    dismiss()
-                }
-            }
-             */
+            
             if let viewModel {
                 @Bindable var viewModel = viewModel
                 Section(header: Text("Detail")) {
@@ -47,7 +28,7 @@ struct SheetTaskView: View {
                     if viewModel.showDateSection {
                         //DatePicker("Due date", selection: $viewModel.reminderItem.dueDate)
                         //.labelsHidden()
-                        DatePicker("", selection: viewModel.closureDate)
+                        DatePicker("", selection: viewModel.closureDate,in: Date()...Date().addYears(20))
                             .labelsHidden()
                     }
                 } header: {
@@ -77,11 +58,12 @@ struct SheetTaskView: View {
                             Image(systemName: "rectangle.and.pencil.and.ellipsis")
                         }
                         .disabled(!viewModel.isFormValid)
+                        .opacity(viewModel.isEdit ? 0 : 1)
                         Spacer()
                         Button {
                             dismiss()
                         } label: {
-                            Text("Cancelar")
+                            Text("Cerrar")
                             Image(systemName: "eraser.fill")
                                 .tint(.red)
                         }

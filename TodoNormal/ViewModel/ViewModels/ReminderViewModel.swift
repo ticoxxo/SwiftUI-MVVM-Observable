@@ -14,21 +14,38 @@ extension ReminderView {
         var reminderID: UUID
         var reminder: Reminder
         var selectedItem: ReminderItem?
+        var isEdit: Bool
+        var reminderManager: ReminderController
         
-        init(reminderId: UUID, reminderManager: ReminderController){
+        init(reminderId: UUID?, reminderManager: ReminderController, isEdit: Bool = false) {
             self.showSheet = false
-            self.reminderID = reminderId
-            self.reminder = reminderManager[copy: reminderId]
-            /* self.reminder = Binding(
-                get: { self.reminderManager[copy: self.reminderID] },
-                set: { self.reminderManager[copy: self.reminderID] = $0 }
-            )
-             */
+            if let rem = reminderId {
+                self.reminderID = rem
+                self.reminder = reminderManager[copy: rem]
+                self.isEdit = false
+            } else {
+                let newReminder = Reminder(title: "Add a title",
+                                           description: "Add a description",
+                                           reminderItems: [],
+                                           status: .isInProgress)
+                self.reminderID = newReminder.id
+                self.reminder =  newReminder
+                self.isEdit = true
+            }
+            self.reminderManager = reminderManager
         }
         
         func addTask(_ reminder: ReminderItem? = nil) {
             self.selectedItem = reminder
             self.showSheet = true
+        }
+        
+        func saveReminder() async {
+            do {
+                try  await self.reminderManager.addOrUpdate(reminder: self.reminder)
+            } catch {
+                print("Error saving reminder: \(error)")
+            }
         }
         
         func saveTask(item: ReminderItem) {
