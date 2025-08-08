@@ -37,7 +37,7 @@ extension TextItemRow {
 }
 
 #Preview {
-    TextItemRow(item: ReminderController.defaultList[2].reminderItems[1])
+    TextItemRow(item: PreviewStore.shared[2].reminderItems[1])
 }
 
 

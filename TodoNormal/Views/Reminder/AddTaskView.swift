@@ -50,7 +50,7 @@ struct SheetTaskView: View {
                         Spacer()
                         Button {
                             Task {
-                                await viewModel.save()
+                                //await viewModel.save()
                                 dismiss()
                             }
                         } label: {
@@ -88,7 +88,7 @@ struct SheetTaskView: View {
 
 
 #Preview {
-    let obj = ReminderController.defaultList[2].reminderItems[0]
+    let obj = PreviewStore.shared[2].reminderItems[0]
     SheetTaskView(reminderItem: obj)
 }
 

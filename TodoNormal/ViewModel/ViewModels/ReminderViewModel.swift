@@ -8,54 +8,82 @@ import SwiftUI
 
 extension ReminderView {
     @Observable
+    @MainActor
     class ViewModel {
-        
-        var showSheet: Bool
-        var reminderID: UUID
-        var reminder: Reminder
-        var selectedItem: ReminderItem?
-        var isEdit: Bool
+        /*
+         get {
+                 // Conditional logic for getting
+                 if reminderManager.selectedReminder?.title.isEmpty == true {
+                     return nil
+                 }
+                 return reminderManager.selectedReminder
+             }
+             set {
+                 // Conditional logic for setting
+                 if let newValue = newValue, !newValue.title.isEmpty {
+                     reminderManager.selectedReminder = newValue
+                 } else {
+                     reminderManager.selectedReminder = nil
+                 }
+             }
+         */
         var reminderManager: ReminderController
+        var showSheet: Bool = false
+        var reminderCopy: ReminderCopy
+        var loading: Bool = true
         
-        init(reminderId: UUID?, reminderManager: ReminderController, isEdit: Bool = false) {
-            self.showSheet = false
-            if let rem = reminderId {
-                self.reminderID = rem
-                self.reminder = reminderManager[copy: rem]
-                self.isEdit = false
+        var isEdit: Bool {
+            reminderCopy.editMode
+        }
+        var canSave: Bool {
+            if isEdit {
+                return false
             } else {
-                let newReminder = Reminder(title: "Add a title",
-                                           description: "Add a description",
-                                           reminderItems: [],
-                                           status: .isInProgress)
-                self.reminderID = newReminder.id
-                self.reminder =  newReminder
-                self.isEdit = true
+                return !reminderCopy.title.isEmpty &&
+                !reminderCopy.description.isEmpty
             }
+        }
+        
+        var canUpdate: Bool {
+            if !isEdit {
+                return false
+            } else {
+                return reminderCopy.title != reminderManager.selectedReminder?.title ||
+                reminderCopy.description != reminderManager.selectedReminder?.description
+            }
+        }
+        
+        init(reminderManager: ReminderController) {
             self.reminderManager = reminderManager
+            self.reminderCopy = ReminderCopy(from: Reminder(title: "Add a title", description: "Add a descripción"))
         }
         
-        func addTask(_ reminder: ReminderItem? = nil) {
-            self.selectedItem = reminder
-            self.showSheet = true
-        }
-        
-        func saveReminder() async {
-            do {
-                try  await self.reminderManager.addOrUpdate(reminder: self.reminder)
-            } catch {
-                print("Error saving reminder: \(error)")
+        func loadReminder() async {
+            guard let reminder = reminderManager.selectedReminder else {
+                let emptyReminder = Reminder(title: "Add a title", description: "Add a descripción")
+                self.reminderCopy = ReminderCopy(from: emptyReminder)
+                loading = false
+                return
             }
+            
+            
+            self.reminderCopy = ReminderCopy(from: reminder, editMode: true)
+            loading = false
         }
-        
-        func saveTask(item: ReminderItem) {
-            if item.id == self.selectedItem?.id {
-                self.reminder[copyById: item.id] = item
-            } else {
-                self.reminder.addTaskItem(item)
-            }
-            //self.reminder.addTaskItem(item)
-        }
+    
+    }
+}
+
+
+struct ReminderCopy {
+    var title: String
+    var description: String
+    var editMode: Bool
+   
+    init(from reminder: Reminder, editMode: Bool = false) {
+        self.title = reminder.title
+        self.description = reminder.description
+        self.editMode = editMode
     }
 }
 

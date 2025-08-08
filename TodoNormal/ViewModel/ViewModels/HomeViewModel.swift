@@ -8,14 +8,30 @@ import SwiftUI
 
 extension Home {
     @Observable
+    @MainActor
     class ViewModel {
-        var reminderManager: ReminderController
+        
+        
         var reminders: [Reminder] {
-            reminderManager.reminders
+            reminderController.reminders
         }
         
+        var selectedReminder: Reminder? {
+            reminderController.selectedReminder
+        }
+            
+        
+        var reminderController: ReminderController
         init(reminderManager: ReminderController) {
-            self.reminderManager = reminderManager
+            self.reminderController = reminderManager
+        }
+        
+        func selectReminder(set selectedReminder: Reminder?) {
+            if let selectedReminder = selectedReminder {
+                self.reminderController.setSelectedReminder(selectedReminder)
+            }
+            
+            self.reminderController.setSelectedReminder(nil)
         }
   
     }

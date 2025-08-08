@@ -7,47 +7,35 @@
 import SwiftUI
 
 struct Home: View {
-    @State private var viewModel: ViewModel?
-    @Environment(\.reminderManager) private var reminderManager
-    @State private var addNewReminder: Bool = false
+    @State private var vm: ViewModel?
+    @Environment(ReminderController.self) var reminderManager
+    @Environment(\.scenePhase) private var scenePhase
+
+    
+    
     
     var body: some View {
-        NavigationStack {
-            if let viewModel {
-                List {
-                    ForEach(viewModel.reminders) { reminder in
-                        NavigationLink(value: reminder.id) {
-                            Text(reminder.title)
-                                .font(.headline)
-                        }
-                    }
-                }
-                .navigationDestination(for: Reminder.ID.self) { id in
-                    ReminderView(reminderId:  id)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            addNewReminder.toggle()
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
-                .sheet(isPresented: $addNewReminder) {
-                    ReminderView(reminderId: nil)
-                }
+        VStack {
+            if let vm {
+                Text("Reminder count: \(vm.reminders.count)")
+                ReminderList(list: vm.reminders)
             }
         }
+        .navigationDestination(for: Reminder.self) { reminder in
+            reminderManager.setSelectedReminder(reminder)
+            return ReminderView()
+        }
         .task {
-            self.viewModel = ViewModel(reminderManager: reminderManager)
+            vm = ViewModel(reminderManager: reminderManager)
         }
     }
 }
 
 #Preview {
-    Home()
-        .environment(\.reminderManager, ReminderController())
+    NavigationStack {
+        Home()
+            .environment(ReminderController(isPreviewMode: true))
+    }
 }
 
 

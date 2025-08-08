@@ -6,36 +6,20 @@
 //
 import SwiftUI
 
-@Observable
-class ReminderItem: Identifiable, Hashable, Equatable {
+struct ReminderItem: Identifiable, Codable, Hashable {
     let id: UUID = UUID()
     var description: String
     var status: StatusItem
     var dueDate: Date?
-    private(set) var creationDate: Date
+    private(set) var creationDate: Date = Date()
     
-    init(description: String, status: StatusItem, dueDate: Date? = nil, creationDate: Date = Date()) {
-        self.description = description
-        self.status = status
-        self.dueDate = dueDate
-        self.creationDate = creationDate
+    enum CodingKeys: CodingKey {
+        case id
+        case description
+        case status
+        case dueDate
+        case creationDate
     }
     
-    static func == (lhs: ReminderItem, rhs: ReminderItem) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.description == rhs.description &&
-            lhs.status == rhs.status &&
-            lhs.dueDate == rhs.dueDate &&
-            lhs.creationDate == rhs.creationDate
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-            hasher.combine(description)
-            hasher.combine(status)
-            hasher.combine(dueDate)
-            hasher.combine(creationDate)
-        }
 }
-
 

@@ -8,7 +8,7 @@ import SwiftUI
 
 @Observable
 class FactoryViewModel {
-    let reminderController = ReminderController()
+    
     
     /*
     func makeHomeViewModel() -> HomeViewModel {

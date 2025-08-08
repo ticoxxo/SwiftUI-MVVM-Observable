@@ -5,19 +5,19 @@
 //  Created by Alberto Almeida on 25/07/25.
 //
 import SwiftUI
-struct ReminderItemText: View {
+struct ReminderRowText: View {
+    var title: String
     var description: String
     var body: some View {
         VStack(alignment: .leading) {
-            Text(description)
+            Text(title)
                 .font(.title3)
                 .bold()
+            Text(description)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .lineLimit(nil)
         }
     }
 }
 
-extension ReminderItemText {
-    init(content: ReminderItem) {
-        self.description = content.description
-    }
-}
