@@ -12,50 +12,50 @@ struct ReminderView: View {
     @Environment(ReminderController.self) var reminderManager
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ViewModel?
+    var reminder: Reminder?
     
     var body: some View {
         ScrollView(.vertical) {
             if let viewModel {
                 @Bindable var viewModel = viewModel
-                if viewModel.loading {
-                    ProgressView()
-                } else {
-                    Section {
-                        DetailText(title: "Title", text: $viewModel.reminderCopy.title)
-                        DetailText(title: "Description", text: $viewModel.reminderCopy.description)
-                    }
-                    .padding()
-                        
+                Section {
+                    DetailText(title: "Title", text: $viewModel.reminderCopy.title)
+                    DetailText(title: "Description", text: $viewModel.reminderCopy.description)
+                }
+                .padding()
                     
-                    Section {
-                        HStack {
-                            Button {
-                                
-                            } label: {
-                                Text("Add task")
-                                    .font(.headline)
-                            }
-                            .opacity(!viewModel.isEdit ? 1 : 0)
-                            .disabled(!viewModel.canSave)
+                
+                Section {
+                    HStack {
+                        Button {
+                            viewModel.saveReminder()
+                            dismiss()
+                        } label: {
+                            Text("Add task")
+                                .font(.headline)
+                        }
+                        .opacity(!viewModel.isEdit ? 1 : 0)
+                        .disabled(!viewModel.canSave)
+                        
+                        
+                        Button {
+                            viewModel.updateReminder()
+                            dismiss()
                             
-                            
-                            Button {
+                        } label: {
+                            Text("Update task")
+                                .font(.headline)
                                 
-                            } label: {
-                                Text("Update task")
-                                    .font(.headline)
-                                    
-                            }
-                            .opacity(viewModel.isEdit ? 1 : 0)
-                            .disabled(!viewModel.canUpdate)
-                            
-                            Button {
-                                
-                            } label: {
-                                Text("Cancel")
-                                    .font(.headline)
-                                    .foregroundColor(.red)
-                            }
+                        }
+                        .opacity(viewModel.isEdit ? 1 : 0)
+                        .disabled(!viewModel.canUpdate)
+                        
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Cancel")
+                                .font(.headline)
+                                .foregroundColor(.red)
                         }
                     }
                 }
@@ -63,8 +63,8 @@ struct ReminderView: View {
         }
         .navigationTitle(viewModel?.isEdit == true ? "Edit reminder" : "New reminder")
         .task {
-            self.viewModel = ViewModel(reminderManager: reminderManager)
-            await viewModel?.loadReminder()
+            self.viewModel = ViewModel(reminderManager: reminderManager, reminder: reminder)
+            //await viewModel?.loadReminder()
         }
     }
     
@@ -111,10 +111,11 @@ struct ReminderView: View {
      */
     
     #Preview {
-        @Previewable var reminder = ReminderController(isPreviewMode: true)
+        @Previewable var reminder = ReminderController()
+        let rem = Reminder.sampleDataSingle
         //reminder.selectedReminder = Reminder.sampleDataSingle
         return NavigationStack {
-            ReminderView()
+            ReminderView(reminder: rem)
                 .environment(reminder)
         }
         

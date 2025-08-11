@@ -11,29 +11,16 @@ extension Home {
     @MainActor
     class ViewModel {
         
-        
         var reminders: [Reminder] {
-            reminderController.reminders
+            self.reminderController.reminders
         }
-        
-        var selectedReminder: Reminder? {
-            reminderController.selectedReminder
-        }
-            
-        
         var reminderController: ReminderController
-        init(reminderManager: ReminderController) {
-            self.reminderController = reminderManager
+        
+        
+        init(list: ReminderController) {
+            self.reminderController = list
         }
         
-        func selectReminder(set selectedReminder: Reminder?) {
-            if let selectedReminder = selectedReminder {
-                self.reminderController.setSelectedReminder(selectedReminder)
-            }
-            
-            self.reminderController.setSelectedReminder(nil)
-        }
-  
     }
 }
 

@@ -30,7 +30,7 @@ extension ReminderView {
         var reminderManager: ReminderController
         var showSheet: Bool = false
         var reminderCopy: ReminderCopy
-        var loading: Bool = true
+        var reminder: Reminder?
         
         var isEdit: Bool {
             reminderCopy.editMode
@@ -48,27 +48,34 @@ extension ReminderView {
             if !isEdit {
                 return false
             } else {
-                return reminderCopy.title != reminderManager.selectedReminder?.title ||
-                reminderCopy.description != reminderManager.selectedReminder?.description
+                return reminderCopy.title != reminder?.title ||
+                reminderCopy.description != reminder?.description
             }
         }
         
-        init(reminderManager: ReminderController) {
+        init(reminderManager: ReminderController, reminder: Reminder?) {
             self.reminderManager = reminderManager
-            self.reminderCopy = ReminderCopy(from: Reminder(title: "Add a title", description: "Add a descripción"))
-        }
-        
-        func loadReminder() async {
-            guard let reminder = reminderManager.selectedReminder else {
-                let emptyReminder = Reminder(title: "Add a title", description: "Add a descripción")
-                self.reminderCopy = ReminderCopy(from: emptyReminder)
-                loading = false
+            guard let reminder = reminder else {
+                self.reminderCopy = ReminderCopy(from: Reminder(title: "Add a title", description: "Add a descripción"))
                 return
             }
-            
-            
             self.reminderCopy = ReminderCopy(from: reminder, editMode: true)
-            loading = false
+            self.reminder = reminder
+        }
+        
+        func saveReminder() {
+            let newReminder = Reminder(
+                title: reminderCopy.title,
+                description: reminderCopy.description
+            )
+            self.reminderManager.saveNewReminder(newReminder)
+        }
+        
+        func updateReminder() {
+            self.reminder?.updateTitle(reminderCopy.title)
+            self.reminder?.updateDescription(reminderCopy.description)
+            
+            self.reminderManager.updateReminder(self.reminder!)
         }
     
     }

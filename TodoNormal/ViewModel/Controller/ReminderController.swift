@@ -10,20 +10,22 @@ import Observation
 @MainActor
 @Observable
 final class ReminderController {
-    var reminders = [Reminder]()
+    
+    private let fileURL = URL.documentsDirectory.appendingPathComponent("remindersList").appendingPathExtension("json")
+        
+    var reminders: [Reminder]
     
     var selectedReminder: Reminder?
     var selectedReminderItem: ReminderItem?
     
-    var isPreviewMode: Bool = false
-    
-    init() {}
-    
-    init(isPreviewMode: Bool) {
-        if isPreviewMode {
-            loadPreviewData()
+    init() {
+        guard let data = try? Data(contentsOf: fileURL),
+        let reminders = try? JSONDecoder().decode([Reminder].self, from: data) else {
+            self.reminders = PreviewStore.shared
+            return
         }
-        self.isPreviewMode = isPreviewMode
+        print(fileURL)
+        self.reminders = reminders
     }
     
 }
@@ -71,49 +73,51 @@ extension ReminderController {
         }
         
         self.reminders[exist] = reminder
+        saveFile()
     }
     
-    func fileUrl() -> URL {
-        let directory = URL.documentsDirectory
-        return directory.appendingPathComponent("remindersList.json")
-    }
-    
+   
     func saveFile() {
         do {
             let data = try JSONEncoder().encode(self.reminders)
-            let url = fileUrl()
-            try data.write(to: url)
-            print("Reminders saved to \(url)")
+            try data.write(to: fileURL)
+            print("Reminders saved to \(fileURL)")
+            Task {
+                await load()
+            }
         } catch {
             print("Error saving reminders: \(error)")
             
         }
     }
     
-    func load() {
+    func load() async {
         do {
-            let url = fileUrl()
-            let data = try Data(contentsOf: url)
+            
+            let data = try Data(contentsOf: fileURL)
             let reminders = try JSONDecoder().decode([Reminder].self, from: data)
             self.reminders = reminders
         } catch {
             print("Error loading reminders: \(error)")
-            self.reminders = []
         }
     }
     
     //Testing previews
     
-    func loadPreviewData() {
-        self.reminders = PreviewStore.shared
+}
+
+extension ReminderController {
+    static var example: Self {
+        let reminder = ReminderController()
+        reminder.reminders = PreviewStore.shared
+        return reminder as! Self
     }
-    
 }
 
 final class PreviewStore {
     static let shared: [Reminder]  = [
-        Reminder(title: "Reminder de prueba", description: "Descripcion de prueba"),
-        Reminder(title: "Reminder dos", description: "Descripcion reminder 2",
+        Reminder(title: "Reminder 1", description: "Descripcion de prueba"),
+        Reminder(title: "Reminder 2", description: "Descripcion reminder 2",
                  reminderItems: [ReminderItem(description: "Item child", status: StatusItem.isDone)]),
         Reminder(title: "Reminder con fecha limite", description: "Fecha limite para reminder ejemplo",
                  reminderItems: [ReminderItem(description: "Darle de comer a los gatos", status: StatusItem.isInProgress),

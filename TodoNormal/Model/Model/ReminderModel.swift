@@ -27,6 +27,15 @@ struct Reminder: Identifiable, Codable, Hashable{
 
 
 extension Reminder {
+    
+    mutating func updateTitle(_ title: String) {
+        self.title = title
+    }
+    
+    mutating func updateDescription(_ description: String) {
+        self.description = description
+    }
+    
     static var sampleDataSingle: Self {
         Reminder(title: "Reminder de prueba", description: "Descripcion de prueba")
     }

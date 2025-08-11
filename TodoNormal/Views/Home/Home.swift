@@ -10,9 +10,6 @@ struct Home: View {
     @State private var vm: ViewModel?
     @Environment(ReminderController.self) var reminderManager
     @Environment(\.scenePhase) private var scenePhase
-
-    
-    
     
     var body: some View {
         VStack {
@@ -22,11 +19,13 @@ struct Home: View {
             }
         }
         .navigationDestination(for: Reminder.self) { reminder in
-            reminderManager.setSelectedReminder(reminder)
-            return ReminderView()
+            //reminderManager.setSelectedReminder(reminder)
+            ReminderView(reminder: reminder)
+                .environment(reminderManager)
         }
+        
         .task {
-            vm = ViewModel(reminderManager: reminderManager)
+            vm = ViewModel(list: reminderManager)
         }
     }
 }
@@ -34,7 +33,7 @@ struct Home: View {
 #Preview {
     NavigationStack {
         Home()
-            .environment(ReminderController(isPreviewMode: true))
+            .environment(ReminderController())
     }
 }
 
