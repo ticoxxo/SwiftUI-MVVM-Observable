@@ -8,12 +8,34 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(ReminderController.self) private var reminderManager
+    @State private var addNewReminder: Bool = false
+    
     var body: some View {
-        Text("Hello, World!")
+        NavigationStack {
+            Home()
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            addNewReminder.toggle()
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                        }
+                        .accessibilityIdentifier("addNewReminderButton")
+                    }
+                }
+                .navigationTitle("Todo list: \(reminderManager.reminders.count)")
+        }
+        .sheet(isPresented: $addNewReminder) {
+            ReminderView()
+                .environment(reminderManager)
+        }
     }
         
 }
 
 #Preview {
     ContentView()
+        .environment(ReminderController())
 }

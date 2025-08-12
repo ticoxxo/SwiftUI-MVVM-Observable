@@ -8,16 +8,19 @@ import SwiftUI
 
 extension Home {
     @Observable
+    @MainActor
     class ViewModel {
-        var reminderManager: ReminderController
+        
         var reminders: [Reminder] {
-            reminderManager.reminders
+            self.reminderController.reminders
+        }
+        var reminderController: ReminderController
+        
+        
+        init(list: ReminderController) {
+            self.reminderController = list
         }
         
-        init(reminderManager: ReminderController) {
-            self.reminderManager = reminderManager
-        }
-  
     }
 }
 

@@ -29,10 +29,59 @@
 		C1AB9CEC2DEF6FE400F0E250 /* TodoNormalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodoNormalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C1D9D8752E4A4C16008DBB53 /* Exceptions for "TodoNormalTest" folder in "TodoNormalTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TodoNormalTests.swift,
+			);
+			target = C1AB9CE12DEF6FE400F0E250 /* TodoNormalTests */;
+		};
+		C1D9D8782E4A4C4A008DBB53 /* Exceptions for "TodoNormalTest" folder in "TodoNormal" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TodoNormalTests.swift,
+			);
+			target = C1AB9CD42DEF6FE200F0E250 /* TodoNormal */;
+		};
+		C1D9D87D2E4A581E008DBB53 /* Exceptions for "TodoNormalUITests" folder in "TodoNormal" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TodoNormalUITests.swift,
+			);
+			target = C1AB9CD42DEF6FE200F0E250 /* TodoNormal */;
+		};
+		C1D9D87F2E4A5821008DBB53 /* Exceptions for "TodoNormalUITests" folder in "TodoNormalUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TodoNormalUITests.swift,
+			);
+			target = C1AB9CEB2DEF6FE400F0E250 /* TodoNormalUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C1AB9CD72DEF6FE200F0E250 /* TodoNormal */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = TodoNormal;
+			sourceTree = "<group>";
+		};
+		C1D9D8702E4A4B0A008DBB53 /* TodoNormalTest */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C1D9D8782E4A4C4A008DBB53 /* Exceptions for "TodoNormalTest" folder in "TodoNormal" target */,
+				C1D9D8752E4A4C16008DBB53 /* Exceptions for "TodoNormalTest" folder in "TodoNormalTests" target */,
+			);
+			path = TodoNormalTest;
+			sourceTree = "<group>";
+		};
+		C1D9D8792E4A5805008DBB53 /* TodoNormalUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C1D9D87D2E4A581E008DBB53 /* Exceptions for "TodoNormalUITests" folder in "TodoNormal" target */,
+				C1D9D87F2E4A5821008DBB53 /* Exceptions for "TodoNormalUITests" folder in "TodoNormalUITests" target */,
+			);
+			path = TodoNormalUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -65,6 +114,8 @@
 		C1AB9CCC2DEF6FE200F0E250 = {
 			isa = PBXGroup;
 			children = (
+				C1D9D8792E4A5805008DBB53 /* TodoNormalUITests */,
+				C1D9D8702E4A4B0A008DBB53 /* TodoNormalTest */,
 				C1AB9CD72DEF6FE200F0E250 /* TodoNormal */,
 				C1AB9CD62DEF6FE200F0E250 /* Products */,
 			);
@@ -97,6 +148,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				C1AB9CD72DEF6FE200F0E250 /* TodoNormal */,
+				C1D9D8702E4A4B0A008DBB53 /* TodoNormalTest */,
+				C1D9D8792E4A5805008DBB53 /* TodoNormalUITests */,
 			);
 			name = TodoNormal;
 			packageProductDependencies = (
@@ -438,7 +491,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 426H2D8TKH;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Ticoxxo.TodoNormalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -457,7 +510,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 426H2D8TKH;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Ticoxxo.TodoNormalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -475,6 +528,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 426H2D8TKH;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Ticoxxo.TodoNormalUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -492,6 +546,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 426H2D8TKH;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = Ticoxxo.TodoNormalUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

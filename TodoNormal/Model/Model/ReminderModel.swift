@@ -6,54 +6,43 @@
 //
 import SwiftUI
 
-@Observable
-class Reminder: Identifiable, Hashable, Equatable {
-    public  let id: UUID = UUID()
+
+struct Reminder: Identifiable, Codable, Hashable{
+    let id: UUID = UUID()
     var title: String
     var description: String
     var image: String?
     var reminderItems = [ReminderItem]()
-    var status: StatusReminder
+    var creationDate: Date = Date()
     
-    init(title: String, description: String, image: String? = nil, reminderItems: [ReminderItem] = [ReminderItem](), status: StatusReminder) {
-        self.title = title
-        self.description = description
-        self.image = image
-        self.reminderItems = reminderItems
-        self.status = status
+    enum CodingKeys: CodingKey {
+        case id
+        case title
+        case description
+        case image
+        case reminderItems
+        case creationDate
     }
 }
 
+
 extension Reminder {
-    subscript(task at: Int) -> ReminderItem? {
-        guard at >= 0 && at < reminderItems.count else {
-            return nil
-        }
-        return reminderItems[at]
+    
+    mutating func updateTitle(_ title: String) {
+        self.title = title
     }
     
-    static func == (lhs: Reminder, rhs: Reminder) -> Bool {
-        lhs.id == rhs.id
+    mutating func updateDescription(_ description: String) {
+        self.description = description
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+    static var sampleDataSingle: Self {
+        Reminder(title: "Reminder de prueba", description: "Descripcion de prueba")
     }
     
-    func addTaskItem(_ item: ReminderItem) {
-        self.reminderItems.append(item)
+    static var sampleDataWithItems: Self {
+        Reminder(title: "Reminder con fecha limite", description: "Fecha limite para reminder ejemplo",
+                 reminderItems: [ReminderItem(description: "Darle de comer a los gatos", status: StatusItem.isInProgress),
+                                 ReminderItem(description: "Darle de comer a los gatos", status: StatusItem.isPending, dueDate: Date().addDays(2))])
     }
-    
-    subscript(indexById id: UUID) -> Int? {
-        guard let index = reminderItems.firstIndex(where: { $0.id == id }) else {
-            return nil
-        }
-        return index
-    }
-    
-    subscript(copyById id: UUID) -> ReminderItem {
-        get { self.reminderItems[self[indexById: id]!] }
-        set { self.reminderItems[self[indexById: id]!] = newValue }
-    }
-    
 }

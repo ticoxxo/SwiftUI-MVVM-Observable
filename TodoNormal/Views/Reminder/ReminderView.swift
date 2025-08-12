@@ -9,84 +9,62 @@ import SwiftUI
 
 struct ReminderView: View {
     
-    @Environment(\.reminderManager) private var reminderManager
+    @Environment(ReminderController.self) var reminderManager
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ViewModel?
-    var reminderId: Reminder.ID?
+    var reminder: Reminder?
+    
     var body: some View {
-        
-        
-        if let viewModel {
-            @Bindable var viewModel = viewModel
-            VStack {
-                
-                VStack {
-                    Text("ID = \(viewModel.reminder.id)")
-                        .font(.caption)
-                        
-                    TextField("|1|  qq", text: $viewModel.reminder.title)
-                    HStack {
-                        Button {
-                            Task {
-                                await viewModel.saveReminder()
-                                dismiss()
-                            }
-                        } label: {
-                            Text("Save")
-                            Image(systemName: "tray.full.fill")
-                        }
-                        Spacer()
-                        Button {
-                            viewModel.addTask()
-                        } label: {
-                            Text("Add task")
-                            Image(systemName: "plus")
-                        }
-                        
-                        
-                    }
-                    .opacity(viewModel.isEdit ? 1 : 0)
+        ScrollView(.vertical) {
+            if let viewModel {
+                @Bindable var viewModel = viewModel
+                Section {
+                    DetailText(title: "Title", text: $viewModel.reminderCopy.title)
+                    DetailText(title: "Description", text: $viewModel.reminderCopy.description)
                 }
                 .padding()
-                        
-                    List {
-                         ForEach($viewModel.reminder.reminderItems) { item in
-                         
-                             HStack {
-                                 TextItemRow(item: item.wrappedValue)
-                                     .onTapGesture {
-                                         viewModel.addTask(item.wrappedValue)
-                                     }
-                                 Spacer()
-                                 PickerView(item: item)
-                             }
-                             .listItemStyle(item.status.wrappedValue.color)
-                         }
-                    }
-    
-            }
-            .navigationTitle("Lista de tareas")
-            .sheet(isPresented: $viewModel.showSheet) {
-                SheetTaskView(reminderItem: viewModel.selectedItem, onSave: { item in
-                    viewModel.saveTask(item: item)
-                })
                     
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.addTask()
-                    } label: {
-                        Image(systemName: "plus")
+                
+                Section {
+                    HStack {
+                        Button {
+                            viewModel.saveReminder()
+                            dismiss()
+                        } label: {
+                            Text("Add task")
+                                .font(.headline)
+                        }
+                        .opacity(!viewModel.isEdit ? 1 : 0)
+                        .disabled(!viewModel.canSave)
+                        
+                        
+                        Button {
+                            viewModel.updateReminder()
+                            dismiss()
+                            
+                        } label: {
+                            Text("Update task")
+                                .font(.headline)
+                                
+                        }
+                        .opacity(viewModel.isEdit ? 1 : 0)
+                        .disabled(!viewModel.canUpdate)
+                        
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Cancel")
+                                .font(.headline)
+                                .foregroundColor(.red)
+                        }
                     }
                 }
             }
         }
-        else {
-            ProgressView()
-                .task {
-                    self.viewModel = ViewModel(reminderId: self.reminderId, reminderManager: reminderManager)
-                }
+        .navigationTitle(viewModel?.isEdit == true ? "Edit reminder" : "New reminder")
+        .task {
+            self.viewModel = ViewModel(reminderManager: reminderManager, reminder: reminder)
+            //await viewModel?.loadReminder()
         }
     }
     
@@ -133,11 +111,77 @@ struct ReminderView: View {
      */
     
     #Preview {
-        
-        let reminder = ReminderController.defaultList[2]
-        NavigationStack {
-            ReminderView(reminderId: reminder.id)
-                .environment(\.reminderManager, ReminderController())
+        @Previewable var reminder = ReminderController()
+        let rem = Reminder.sampleDataSingle
+        //reminder.selectedReminder = Reminder.sampleDataSingle
+        return NavigationStack {
+            ReminderView(reminder: rem)
+                .environment(reminder)
         }
         
     }
+
+
+/*
+ 
+ if let viewModel {
+     @Bindable var viewModel = viewModel
+     VStack {
+         
+         VStack {
+             Text("ID = \(viewModel.reminder.id)")
+                 .font(.caption)
+                 
+             TextField("|1|  qq", text: $viewModel.reminder.title)
+             HStack {
+                 Button {
+                     Task {
+                         //await viewModel.saveReminder()
+                         dismiss()
+                     }
+                 } label: {
+                     Text("Save")
+                     Image(systemName: "tray.full.fill")
+                 }
+                 Spacer()
+                 Button {
+                     //viewModel.addTask()
+                 } label: {
+                     Text("Add task")
+                     Image(systemName: "plus")
+                 }
+                 
+                 
+             }
+             .opacity(viewModel.isEdit ? 1 : 0)
+         }
+         .padding()
+                 
+             List {
+                  ForEach($viewModel.reminder.reminderItems) { item in
+                  
+                      HStack {
+                          TextItemRow(item: item.wrappedValue)
+                              .onTapGesture {
+                                  //viewModel.addTask(item.wrappedValue)
+                              }
+                          Spacer()
+                          PickerView(item: item)
+                      }
+                      .listItemStyle(item.status.wrappedValue.color)
+                  }
+             }
+
+     }
+     .navigationTitle("Lista de tareas")
+     .sheet(isPresented: $viewModel.showSheet) {
+             
+     }
+ }
+ else {
+     ProgressView()
+         .task {
+             self.viewModel = ViewModel(reminderId: self.reminderId, reminderManager: reminderManager)
+         }
+ }
+ */
