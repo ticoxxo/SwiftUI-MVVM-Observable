@@ -21,5 +21,17 @@ struct ReminderItem: Identifiable, Codable, Hashable {
         case creationDate
     }
     
+    mutating func updateDescription(from: String) {
+        self.description = from
+    }
+    
+    mutating func updateStatus(from: StatusItem) {
+        self.status = from
+    }
+    
+    mutating func updateDueDate(from: Date?) {
+        self.dueDate = from
+    }
+    
 }
 

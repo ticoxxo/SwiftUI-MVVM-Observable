@@ -81,24 +81,6 @@ struct ReminderView: View {
         }
     }
     
-    
-    struct PickerView: View {
-        @Binding var item: ReminderItem
-        
-        var body: some View {
-            VStack {
-                AnimateStatus(symbolo: item.status.imageText, color: item.status.color)
-                Picker("",selection: $item.status) {
-                    ForEach(StatusItem.allCases) { status in
-                        Text(status.statusText)
-                    }
-                }
-                .labelsHidden()
-            }
-            .frame(maxWidth: UIScreen.main.bounds.width * 0.25)
-        }
-    }
-    
     /*
      
      ForEach(StatusItem.allCases) { status in
