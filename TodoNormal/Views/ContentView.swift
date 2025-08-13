@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(ReminderController.self) private var reminderManager
+    @Environment(\.scenePhase) var scenePhase
     @State private var addNewReminder: Bool = false
     
     var body: some View {
@@ -26,6 +27,16 @@ struct ContentView: View {
                     }
                 }
                 .navigationTitle("Todo list: \(reminderManager.reminders.count)")
+                .onChange(of: scenePhase) {_, phase in
+                    switch phase {
+                    case .active:
+                         reminderManager.load()
+                    case .inactive, .background:
+                        reminderManager.saveFile()
+                    @unknown default:
+                        break
+                    }
+                }
         }
         .sheet(isPresented: $addNewReminder) {
             ReminderView()

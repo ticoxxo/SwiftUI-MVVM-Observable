@@ -20,7 +20,7 @@ struct Home: View {
         }
         .navigationDestination(for: Reminder.self) { reminder in
             //reminderManager.setSelectedReminder(reminder)
-            ReminderView(reminder: reminder)
+            ReminderDetailView(reminder: reminder)
                 .environment(reminderManager)
         }
         

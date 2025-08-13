@@ -15,32 +15,21 @@ final class ReminderController {
         
     var reminders: [Reminder]
     
-    var selectedReminder: Reminder?
-    var selectedReminderItem: ReminderItem?
-    
     init() {
-        guard let data = try? Data(contentsOf: fileURL),
-        let reminders = try? JSONDecoder().decode([Reminder].self, from: data) else {
+        self.reminders = []
+    }
+    
+    init(isMock: Bool = false) {
+        if isMock {
             self.reminders = PreviewStore.shared
-            return
+        } else {
+            self.reminders = []
         }
-        print(fileURL)
-        self.reminders = reminders
     }
     
 }
 
 extension ReminderController {
-    
-    func setSelectedReminder(_ reminder: Reminder?) {
-        guard let reminder else{
-            self.selectedReminder = nil
-            return
-        }
-        
-        self.selectedReminder = reminder
-        
-    }
     
     //subscript to access reminders by UUID
     subscript(withId id: UUID) -> Reminder? {
@@ -60,9 +49,41 @@ extension ReminderController {
         return exist
     }
     
+    //Task
+    subscript(indexOfId id: UUID, in reminder: Reminder) -> Int? {
+        guard let exist = self[indexOfId: reminder.id] else {
+            return nil
+        }
+        
+        guard let taskIndex = self.reminders[exist].reminderItems.firstIndex(where: { $0.id == id }) else {
+            return nil
+        }
+        
+        return taskIndex
+    }
+    
     func saveNewReminder(_ reminder: Reminder) {
         self.reminders.append(reminder)
-        saveFile()
+    }
+    
+    func saveNewTaskReminder(_ reminderTask: ReminderItem, to reminder: Reminder) {
+        guard let exist = self[indexOfId: reminder.id] else {
+            return
+        }
+        
+        self.reminders[exist].reminderItems.append(reminderTask)
+    }
+    
+    func updateTaskReminder(_ reminderTask: ReminderItem, to reminder: Reminder) {
+        guard let existTask = self[indexOfId: reminderTask.id, in: reminder] else {
+            return
+        }
+        
+        guard let existReminder = self[indexOfId: reminder.id] else {
+            return
+        }
+        
+        self.reminders[existReminder].reminderItems[existTask] = reminderTask
     }
     
     func updateReminder(_ reminder: Reminder) {
@@ -73,7 +94,6 @@ extension ReminderController {
         }
         
         self.reminders[exist] = reminder
-        saveFile()
     }
     
    
@@ -82,16 +102,13 @@ extension ReminderController {
             let data = try JSONEncoder().encode(self.reminders)
             try data.write(to: fileURL)
             print("Reminders saved to \(fileURL)")
-            Task {
-                await load()
-            }
         } catch {
             print("Error saving reminders: \(error)")
             
         }
     }
     
-    func load() async {
+    func load() {
         do {
             
             let data = try Data(contentsOf: fileURL)

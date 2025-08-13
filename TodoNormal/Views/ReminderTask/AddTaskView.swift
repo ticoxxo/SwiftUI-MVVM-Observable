@@ -28,8 +28,7 @@ struct SheetTaskView: View {
                     if viewModel.showDateSection {
                         //DatePicker("Due date", selection: $viewModel.reminderItem.dueDate)
                         //.labelsHidden()
-                        DatePicker("", selection: viewModel.closureDate,in: Date()...Date().addYears(20))
-                            .labelsHidden()
+                        
                     }
                 } header: {
                     Toggle("Wanna add a due date?", isOn: $viewModel.showDateSection)
@@ -41,7 +40,7 @@ struct SheetTaskView: View {
                     HStack {
                         Text("Status of task")
                         Spacer()
-                        PickerView(item: $viewModel.reminderItem)
+                        //PickerView(item: $viewModel.reminderItem)
                     }
                 }
                 

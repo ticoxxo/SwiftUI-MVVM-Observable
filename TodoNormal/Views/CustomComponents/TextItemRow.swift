@@ -20,6 +20,7 @@ struct TextItemRow: View {
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }
+        
     }
         
 }

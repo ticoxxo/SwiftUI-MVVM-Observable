@@ -21,11 +21,9 @@ extension SheetTaskView {
                 newValue ? (self.reminderItem.dueDate = Date().addDays(1)) : (self.reminderItem.dueDate = nil)
             }
         }
-        var closureDate: Binding<Date> {
-            Binding(
-                get: { self.reminderItem.dueDate ?? Date()},
-                set: { self.reminderItem.dueDate = $0 }
-            )
+        var closureDate: Date {
+            get { self.reminderItem.dueDate ?? Date()}
+            set { self.reminderItem.dueDate = newValue }
         }
         
         var isFormValid: Bool {
