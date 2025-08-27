@@ -6,13 +6,13 @@
 //
 import SwiftUI
 
-enum StatusItem: Hashable, CaseIterable, Identifiable, Codable {
-    case isDone
-    case isCancelled
-    case isPaused
-    case isInProgress
-    case isArchived
-    case isPending
+enum StatusItem: Int16, Hashable, CaseIterable, Identifiable, Codable {
+    case isInProgress = 0
+    case isCancelled = 1
+    case isPaused = 2
+    case isDone = 3
+    case isArchived = 4
+    case isPending = 5
     
     var color: Color {
         switch self {

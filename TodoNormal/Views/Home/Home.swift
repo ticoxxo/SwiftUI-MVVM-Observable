@@ -5,35 +5,37 @@
 //  Created by Alberto Almeida on 22/07/25.
 //
 import SwiftUI
+import CoreData
 
 struct Home: View {
-    @State private var vm: ViewModel?
-    @Environment(ReminderController.self) var reminderManager
-    @Environment(\.scenePhase) private var scenePhase
+    
+    @ObservedObject private var viewModel: ViewModel
+    
+    @Environment(\.managedObjectContext) var context
+    
+    init() {
+        _viewModel = ObservedObject(wrappedValue: ViewModel())
+    }
     
     var body: some View {
         VStack {
-            if let vm {
-                Text("Reminder count: \(vm.reminders.count)")
-                ReminderList(list: vm.reminders)
+            List(viewModel.reminders) { reminder in
+                ReminderRowText(title: reminder.title, description: reminder.descriptor)
+                Text("Si")
             }
         }
-        .navigationDestination(for: Reminder.self) { reminder in
-            //reminderManager.setSelectedReminder(reminder)
-            ReminderDetailView(reminder: reminder)
-                .environment(reminderManager)
-        }
-        
         .task {
-            vm = ViewModel(list: reminderManager)
+            viewModel.setContext(context: context)
+            viewModel.fetchReminders()
         }
     }
 }
 
 #Preview {
+    @Previewable @State  var context = PersistentContainer.preview.container.viewContext
     NavigationStack {
         Home()
-            .environment(ReminderController())
+            .environment(\.managedObjectContext, context)
     }
 }
 
