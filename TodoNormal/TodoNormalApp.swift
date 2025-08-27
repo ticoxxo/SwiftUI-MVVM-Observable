@@ -9,11 +9,17 @@ import SwiftUI
 
 @main
 struct TodoNormalApp: App {
-    @State private var manager = ReminderController()
+    let persistentController = PersistentContainer.shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(manager)
+                .environment(\.managedObjectContext, persistentController.container.viewContext)
+                
         }
     }
 }
+
+/*
+ .environment(\.managedObjectContext, PersistentContainer.preview.container.viewContext)
+ */
